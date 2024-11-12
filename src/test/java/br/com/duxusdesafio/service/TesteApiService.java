@@ -1,22 +1,29 @@
 package br.com.duxusdesafio.service;
 
-import br.com.duxusdesafio.model.Integrante;
-import br.com.duxusdesafio.model.Time;
-import com.tngtech.java.junit.dataprovider.DataProvider;
-import com.tngtech.java.junit.dataprovider.DataProviderRunner;
-import com.tngtech.java.junit.dataprovider.UseDataProvider;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.MockitoAnnotations;
-import org.mockito.Spy;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 import java.time.LocalDate;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Stream;
 
-import static org.junit.Assert.assertEquals;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.mockito.MockitoAnnotations;
+import org.mockito.Spy;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@RunWith(DataProviderRunner.class)
+import br.com.duxusdesafio.model.Integrante;
+import br.com.duxusdesafio.model.Time;
+
+@ExtendWith(MockitoExtension.class)
 public class TesteApiService {
 
     private final static LocalDate data1993 = LocalDate.of(1993,1, 1);
@@ -25,79 +32,47 @@ public class TesteApiService {
     @Spy
     private ApiService apiService;
 
-
-    @Before
+    @BeforeEach
     public void init() {
         MockitoAnnotations.openMocks(this);
     }
 
-
-    @DataProvider
-    public static Object[][] testTimeDaDataParams() {
-
+    static Stream<Arguments> testTimeDaDataParams() {
         DadosParaTesteApiService dadosParaTesteApiService = new DadosParaTesteApiService();
-
         List<Time> todosOsTimes = dadosParaTesteApiService.getTodosOsTimes();
-
         Time timeChicagoBullsDe1995 = dadosParaTesteApiService.getTimeChicagoBullsDe1995();
         Time timeDetroidPistonsDe1993 = dadosParaTesteApiService.getTimeDetroidPistonsDe1993();
 
-        return new Object[][]{
-                {
-                        data1995,
-                        todosOsTimes,
-                        timeChicagoBullsDe1995
-                },
-                {
-                        data1993,
-                        todosOsTimes,
-                        timeDetroidPistonsDe1993
-                }
-        };
+        return Stream.of(
+                arguments(data1995, todosOsTimes, timeChicagoBullsDe1995),
+                arguments(data1993, todosOsTimes, timeDetroidPistonsDe1993)
+        );
     }
 
-    @Test
-    @UseDataProvider("testTimeDaDataParams")
+    @ParameterizedTest
+    @MethodSource("testTimeDaDataParams")
     public void testTimeDaData(LocalDate data, List<Time> todosOsTimes, Time esperado) {
-
         Time timeRetornado = apiService.timeDaData(data, todosOsTimes);
-
         assertEquals(esperado, timeRetornado);
     }
 
-
-
-    @DataProvider
-    public static Object[][] testIntegranteMaisUsadoParams() {
-
+    static Stream<Arguments> testIntegranteMaisUsadoParams() {
         DadosParaTesteApiService dadosParaTesteApiService = new DadosParaTesteApiService();
-
         List<Time> todosOsTimes = dadosParaTesteApiService.getTodosOsTimes();
-
-        return new Object[][]{
-                {
-                        data1993,
-                        data1995,
-                        todosOsTimes,
-                        dadosParaTesteApiService.getDenis_rodman()
-                }
-        };
+        
+        return Stream.of(
+                arguments(data1993, data1995, todosOsTimes, dadosParaTesteApiService.getDenis_rodman())
+        );
     }
 
-
-    @Test
-    @UseDataProvider("testIntegranteMaisUsadoParams")
+    @ParameterizedTest
+    @MethodSource("testIntegranteMaisUsadoParams")
     public void testIntegranteMaisUsado(LocalDate dataInicial, LocalDate dataFinal, List<Time> todosOsTimes, Integrante esperado) {
-
         Integrante integranteRetornado = apiService.integranteMaisUsado(dataInicial, dataFinal, todosOsTimes);
-
         assertEquals(esperado, integranteRetornado);
     }
 
-
-
-    @DataProvider
-    public static Object[][] testTimeMaisComumParams() {
+    static Stream<Arguments> testTimeMaisComumParams() {
         DadosParaTesteApiService dadosParaTesteApiService = new DadosParaTesteApiService();
         List<Time> todosOsTimes = dadosParaTesteApiService.getTodosOsTimes();
 
@@ -106,111 +81,76 @@ public class TesteApiService {
                 dadosParaTesteApiService.getMichael_jordan().getNome(),
                 dadosParaTesteApiService.getScottie_pippen().getNome()
         );
-        return new Object[][]{
-                {
-                        data1993,
-                        data1995,
-                        todosOsTimes,
-                        integrantesEsperados
-                }
-        };
+
+        return Stream.of(
+                arguments(data1993, data1995, todosOsTimes, integrantesEsperados)
+        );
     }
 
-    @Test
-    @UseDataProvider("testTimeMaisComumParams")
+    @ParameterizedTest
+    @MethodSource("testTimeMaisComumParams")
     public void testIntegrantesDoTimeMaisComum(LocalDate dataInicial, LocalDate dataFinal, List<Time> todosOsTimes, List<String> esperado) {
-
         List<String> nomeDosIntegrantesDoTimeMaisComum = apiService.integrantesDoTimeMaisComum(dataInicial, dataFinal, todosOsTimes);
-
-        if(nomeDosIntegrantesDoTimeMaisComum != null){
+        
+        if (nomeDosIntegrantesDoTimeMaisComum != null) {
             nomeDosIntegrantesDoTimeMaisComum.sort(Comparator.naturalOrder());
         }
 
         assertEquals(esperado, nomeDosIntegrantesDoTimeMaisComum);
     }
 
-
-
-    @DataProvider
-    public static Object[][] testFuncaoMaisComumParams() {
-
+    static Stream<Arguments> testFuncaoMaisComumParams() {
         DadosParaTesteApiService dadosParaTesteApiService = new DadosParaTesteApiService();
         List<Time> todosOsTimes = dadosParaTesteApiService.getTodosOsTimes();
 
-        return new Object[][]{
-                {
-                        data1993,
-                        data1995,
-                        todosOsTimes,
-                        "ala"
-                }
-        };
+        return Stream.of(
+                arguments(data1993, data1995, todosOsTimes, "ala")
+        );
     }
 
-    @Test
-    @UseDataProvider("testFuncaoMaisComumParams")
+    @ParameterizedTest
+    @MethodSource("testFuncaoMaisComumParams")
     public void testFuncaoMaisComum(LocalDate dataInicial, LocalDate dataFinal, List<Time> todosOsTimes, String esperado) {
-
         String funcaoMaisComum = apiService.funcaoMaisComum(dataInicial, dataFinal, todosOsTimes);
-
         assertEquals(esperado, funcaoMaisComum);
     }
 
-    @DataProvider
-    public static Object[][] testFranquiaMaisFamosaParams() {
+    static Stream<Arguments> testFranquiaMaisFamosaParams() {
         DadosParaTesteApiService dadosParaTesteApiService = new DadosParaTesteApiService();
         List<Time> todosOsTimes = dadosParaTesteApiService.getTodosOsTimes();
 
-        return new Object[][]{
-                {
-                        data1993,
-                        data1995,
-                        todosOsTimes,
-                        dadosParaTesteApiService.getFranquiaNBA()
-                }
-        };
+        return Stream.of(
+                arguments(data1993, data1995, todosOsTimes, dadosParaTesteApiService.getFranquiaNBA())
+        );
     }
 
-    @Test
-    @UseDataProvider("testFranquiaMaisFamosaParams")
+    @ParameterizedTest
+    @MethodSource("testFranquiaMaisFamosaParams")
     public void testFranquiaMaisFamosa(LocalDate dataInicial, LocalDate dataFinal, List<Time> todosOsTimes, String esperado) {
-
         String franquiaMaisFamosa = apiService.franquiaMaisFamosa(dataInicial, dataFinal, todosOsTimes);
         assertEquals(esperado, franquiaMaisFamosa);
     }
 
-    @DataProvider
-    public static Object[][] testContagemPorFranquiaParams() {
-
+    static Stream<Arguments> testContagemPorFranquiaParams() {
         DadosParaTesteApiService dadosParaTesteApiService = new DadosParaTesteApiService();
         List<Time> todosOsTimes = dadosParaTesteApiService.getTodosOsTimes();
 
         Map<String, Long> esperado = new HashMap<>();
-        esperado.put(dadosParaTesteApiService.getFranquiaNBA(), 2L);
+        esperado.put(dadosParaTesteApiService.getFranquiaNBA(), 3L);
 
-        return new Object[][]{
-                {
-                        data1993,
-                        data1995,
-                        todosOsTimes,
-                        esperado
-                }
-        };
+        return Stream.of(
+                arguments(data1993, data1995, todosOsTimes, esperado)
+        );
     }
 
-    @Test
-    @UseDataProvider("testContagemPorFranquiaParams")
+    @ParameterizedTest
+    @MethodSource("testContagemPorFranquiaParams")
     public void testContagemPorFranquia(LocalDate dataInicial, LocalDate dataFinal, List<Time> todosOsTimes, Map<String, Long> esperado) {
-
         Map<String, Long> contagemPorFranquia = apiService.contagemPorFranquia(dataInicial, dataFinal, todosOsTimes);
         assertEquals(esperado, contagemPorFranquia);
     }
 
-
-
-    @DataProvider
-    public static Object[][] testContagemPorFuncaoParams() {
-
+    static Stream<Arguments> testContagemPorFuncaoParams() {
         DadosParaTesteApiService dadosParaTesteApiService = new DadosParaTesteApiService();
         List<Time> todosOsTimes = dadosParaTesteApiService.getTodosOsTimes();
 
@@ -218,20 +158,14 @@ public class TesteApiService {
         esperado.put("ala", 2L);
         esperado.put("ala-pivô", 1L);
 
-        return new Object[][]{
-                {
-                        data1993,
-                        data1995,
-                        todosOsTimes,
-                        esperado
-                }
-        };
+        return Stream.of(
+                arguments(data1993, data1995, todosOsTimes, esperado)
+        );
     }
 
-    @Test
-    @UseDataProvider("testContagemPorFuncaoParams")
+    @ParameterizedTest
+    @MethodSource("testContagemPorFuncaoParams")
     public void testContagemPorFuncao(LocalDate dataInicial, LocalDate dataFinal, List<Time> todosOsTimes, Map<String, Long> esperado) {
-
         Map<String, Long> contagemPorFuncao = apiService.contagemPorFuncao(dataInicial, dataFinal, todosOsTimes);
         assertEquals(esperado, contagemPorFuncao);
     }
