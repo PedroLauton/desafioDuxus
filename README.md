@@ -1,171 +1,126 @@
+# Duxus Estágio
 
-# Desafio de Desenvolvimento
+Este repositório contém a solução para o desafio de estágio proposto pela Élin Duxus Consultoria.
 
-O objetivo deste desafio é obter uma ideia das habilidades que o candidato possui, da organização de tempo e também do código.
+## Pré-requisitos
 
-## Considerações Importantes – Por favor, leia com atenção:
+O projeto foi desenvolvido utilizando as seguintes tecnologias e ferramentas:
 
-- O desafio já tem códigos pré prontos para você completar as funcionalidades. Não é preciso reinventar a roda! Use o que existe!
+- **Java** como linguagem principal;
+- **Maven** como compilador e gerenciador de dependências;
+- **Banco de dados H2** (em memória, para simplificar o teste);
+- **Spring Tools Suite (STS)** como ambiente de desenvolvimento.
 
-- Use seu tempo de forma inteligente: Uma solução simples primeiro e depois avance.
+## Clonar o projeto
 
-- Comentários sempre são bem-vindos em métodos ou estruturas mais complexas.
+Para clonar o projeto, basta digitar o seguinte comando no Git Bash: 
 
-- Parece não intuitivo, mas deixe as telas por último, pense na estrutura dos dados e nos métodos de gravação e exportação primeiro.
+```bash
+git clone https://github.com/PedroLauton/desafioDuxusEstagio.git
+```
 
-- Utilize os testes unitários já existentes e crie novos também, isso é importante. Não existe necessidade de 100% de cobertura, mas use-os para experimentar e validar sua solução – **é muito importante que os testes já existentes estejam passando após a sua implementação!**
+## Estrutura do Projeto
 
-- Faça commits frequentes, assim podemos ver a evolução da sua solução.
+As principais classes do projeto são **Integrante**, **Time** e **ComposicaoTime**, conforme especificado no enunciado do desafio. 
 
-- Sobre banco de dados, você pode usar qualquer um que esteja acostumado, inclusive em memória, se preferir. Aqui utilizamos, comumente: PostgreSQL, Microsoft SQL Server, Oracle DB, MySQL e, especialmente para testes, HSQLDB. 
+O projeto segue uma estruturação em três camadas, com responsabilidades bem definidas:
 
-- Entregue tudo o que conseguir fazer, indiferente de estar completo ou não.
+- **Resource**: Responsável por gerenciar as requisições HTTP da aplicação, atuando como ponto de entrada para as interações com o usuário ou outros serviços. É nesta camada que os endpoints são definidos.
+  
+- **Service**: Contém a lógica de negócios da aplicação, processando os dados recebidos e aplicando as regras de negócio definidas. Esta camada coordena as operações entre o controlador e o repositório.
+  
+- **Repository**: Gerencia o acesso aos dados e é responsável pela comunicação com o banco de dados.
 
-- Durante o período de teste, fique à vontade para enviar dúvidas ao recrutador.
+Assim, os endpoints estão definidos no pacote `resource`, as regras de negócio no pacote `service`, e a comunicação com o banco de dados no pacote `repositories`.
 
-- Ao final, deixamos alguns links que podem ser úteis para consulta, mas você pode consultar qualquer material, à vontade.
+## Execução do Projeto
 
-- Nos envie, ao final, uma descrição com detalhes de como podemos testar a sua implementação.
+Abaixo seguem as instruções de como testar o projeto.
 
-## O que você deve implementar:
+### API de Processamento de Dados
 
-Imagine que você quer fazer um sistema de escalação de times. Toda semana você vai montar um time vencedor. 
+Para executar a API, inicie a aplicação Spring Boot e utilize um navegador ou uma ferramenta como o Postman para acessar os endpoints descritos abaixo. Os endpoints podem ser acessados através do endereço `localhost` seguido dos parâmetros.
 
-Não importa se é Esporte tradicional ou eSports.
+| Endpoint  | Parâmetros (Chaves) |
+|-----------|----------------------|
+| `/processamento/TimeDaData` | data=yyyy-MM-dd | 
+| `/processamento/IntegranteMaisUsado` | datainicial=yyyy-MM-dd&datafinal=yyyy-MM-dd |
+| `/processamento/TimeMaisComum` | datainicial=yyyy-MM-dd&datafinal=yyyy-MM-dd |
+| `/processamento/FuncaoMaisComum` | datainicial=yyyy-MM-dd&datafinal=yyyy-MM-dd |
+| `/processamento/FranquiaMaisFamosa` | datainicial=yyyy-MM-dd&datafinal=yyyy-MM-dd |
+| `/processamento/ContagemPorFranquia` | datainicial=yyyy-MM-dd&datafinal=yyyy-MM-dd |
+| `/processamento/ContagemPorFuncao` | datainicial=yyyy-MM-dd&datafinal=yyyy-MM-dd |
 
-Exemplos de Esporte tradicional : Futebol, Basquete.
+Observações:
+- Todos os endpoints, exceto **TimeDaData**, permitem valores nulos para datas. Porém, se forem fornecidas datas, é necessário especificar tanto a data inicial quanto a final; caso uma das datas esteja ausente, o sistema retornará uma mensagem de erro.
+- O sistema exibe apenas dados relacionados aos times registrados no banco. Integrantes sem associação a um time não serão considerados nos resultados, conforme especificado no desafio.
 
-Exemplos de eSports : Counter Strike, Valorant, Free Fire, League of Legends, APEX.
+#### Resultados esperados
 
-Sua tarefa é construir a melhor solução no tempo combinado, considerando os requisitos que estarão descritos abaixo.
+ContagemPorFranquia
 
-Você pode usar a criatividade pois não existe uma solução definitiva para o desafio.
-
-Abaixo, mais detalhes:
-
-## Estrutura dos Dados
-
-### Tabela de "Integrante" :
-
-- Id
-- Franquia
-- Nome
-- Função
-
-### Tabela de Time:
-
-- Id
-- Data
-
-### Tabela de ComposicaoTime:
-
-- Id
-- Id_Time  (foreign key tabela Time)
-- Id_Integrante  (foreign key tabela Integrante)
-
-## Funcionalidades Principais
-
-### 1) Tratamento de dados – PASSO MAIS IMPORTANTE DO DESAFIO, foque nessa etapa primeiro.
-
-Esse passo é o mais importante no teste porque gostaríamos de medir a sua capacidade de lidar com estruturas de dados. 
-
-Já existe um service criado no projeto (ApiService), com métodos para serem implementados, e testes unitários para eles. Utilize-os!
-
-Sendo possível, crie novos testes unitários, aumente os cases dos testes atuais, amplie essa cobertura de testes, pois é muito importante garantir que o código esteja atendendo corretamente o que se pede.
-
-No quadro, alguns detalhes sobre os métodos:
-
-| Método  | Parâmetros | Descrição |
-|--|--|--|
-| TimeDaData | Data, Lista de todos os Times                              | Vai retornar o Time com os integrantes do time daquela data                                 |
-| IntegranteMaisUsado | Data inicial e Data final (podem ser null), Lista de todos os Times | Vai retornar o integrante que tiver presente na maior quantidade de times dentro do período |
-| IntegrantesDoTimeMaisComum | Data inicial e Data final (podem ser null), Lista de todos os Times | Vai retornar uma lista com os nomes dos integrantes do time mais comum dentro do período    |
-| FuncaoMaisComum | Data inicial e Data final (podem ser null), Lista de todos os Times | Vai retornar a função mais comum nos times dentro do período                                |
-| FranquiaMaisFamosa | Data inicial e Data final (podem ser null), Lista de todos os Times | Vai retornar o nome da Franquia mais comum nos times dentro do período                      |
-| ContagemPorFranquia | Data inicial e Data final (podem ser null), Lista de todos os Times | Vai retornar o número (quantidade) de Franquias dentro do período                           |
-| ContagemPorFuncao | Data inicial e Data final (podem ser null), Lista de todos os Times | Vai retornar o número (quantidade) de Funções dentro do período                             |
-
-## Funcionalidades Extras
-### 2) API de Cadastro
-
-Lembrando: a prioridade é a funcionalidade correta, não as telas. 
-
-#### Cadastro de Integrantes
-
-Fazer um cadastro de integrantes para os times.
-
-#### Cadastro de Times
-
-Fazer um cadastro de times onde não importa muito a quantidade de integrantes. 
-
-Para cadastrar um time para uma determinada semana basta escolher os personagens/integrantes que farão parte dele.
-
-
-### 3) API para processamento de Dados
-
-Seu sistema vai processar as informações do banco de dados e vai exportá-las através de endpoints.
-
-Você deve usar os selects para trazer todos os dados, mas processe eles na linguagem, através dos métodos implementados no passo 1.
-
-| Endpoint  | Parâmetros |
-|--|--|
-| TimeDaData | Data | 
-| IntegranteMaisUsado | Data inicial e Data final (podem ser null) |
-| TimeMaisComum | Data inicial e Data final (podem ser null) |
-| FuncaoMaisComum | Data inicial e Data final (podem ser null) |
-| FranquiaMaisFamosa | Data inicial e Data final (podem ser null) |
-| ContagemPorFranquia | Data inicial e Data final (podem ser null) |
-| ContagemPorFuncao | Data inicial e Data final (podem ser null) |
-
-Exemplos de Resultados esperados:
+```
+{
+    "NBA": 2,
+    "Apex": 6
+}
+```
 
 TimeDaData
-``` 
+```
 {
-  "data": 2021-01-15,
-  "integrantes": [ "Bangalore", "BloodHound", "Crypto" ]
+    "Integrantes": [
+        "Denis Rodman"
+    ],
+    "Data": "1993-01-01"
 }
 ```
 
 FuncaoMaisComum
-``` 
-{
-  "Função" : "Meia"
-}
 ```
-
-ContagemPorFranquia
-``` 
 {
-  "Apex Legends": 5,
-  "Overwatch": 2,
-  "FreeFire": 3
+    "Função": "Sniper"
 }
 ```
 
 
-### 4) Telas
 
-Conforme já foi dito as telas de cadastro tem prioridade menor do que o funcionamento da API.
+### API de Cadastro
 
-Você pode fazer as telas da maneira mais simples possível e usar qualquer framework que facilite o desenvolvimento.
+Para realizar o cadastro de integrantes ou times, deve-se digitar a seguinte URL no navegador: 
 
-- Tela de Inserção de Integrantes
-    - Um formulário com os campos é suficiente
-- Tela de Montagem de Times pode ser feita de diversas maneiras, algumas sugestões:
-    - Fazer uma listagem e colocar um checkbox ao lado de cada integrante
-    - Fazer um "transfer" usando dois "selects" de html
-    - Usar um componente de jquery ( https://www.jqueryscript.net/blog/best-multiple-select.html )
+```bash
+    http://localhost:8080
+```
+Na página inicial será exibido dois links para realizar os cadastros.
 
-Não se sinta obrigado a utilizar algo dessas sugestões, fique à vontade para utilizar o que tiver mais domínio ou preferência.
+![image](https://github.com/user-attachments/assets/27d74875-ea92-4db5-88ad-7aa16515ebd4)
 
-O importante é a tela estar funcional e a beleza não será avaliada.
 
-## Alguns links úteis para consulta
+#### Cadastro de Integrantes
 
-- https://www.baeldung.com/java-collections
-- https://www.baeldung.com/java-8-streams-introduction
-- https://pt.linkedin.com/pulse/tdd-com-java-junit-e-mockito-tiago-perroni
-- https://www.devmedia.com.br/rest-tutorial/28912
-- https://www.baeldung.com/rest-with-spring-series
-- https://www.baeldung.com/jackson-vs-gson
+Na página de cadastro de integrantes, preencha os campos necessários e clique em **Cadastrar**. Uma mensagem de confirmação aparecerá caso o cadastro seja bem-sucedido. Caso contrário, uma mensagem de erro será exibida.
+
+![image](https://github.com/user-attachments/assets/9cac63b6-2f4b-45c8-b9b8-654da0ca2e11)
+
+![image](https://github.com/user-attachments/assets/d9618829-6239-4a63-9016-69b1d6e73e9f)
+
+#### Cadastro de Times
+
+Para cadastrar um time, selecione uma data e uma franquia para o time. A escolha da franquia filtra a lista de integrantes disponíveis para seleção, garantindo que todos os integrantes do time pertençam à mesma franquia. Selecione ao menos um integrante e clique em **Cadastrar**. Uma mensagem de confirmação será exibida em caso de sucesso, e mensagens de erro serão exibidas em caso de problemas.
+
+![image](https://github.com/user-attachments/assets/4a70d554-9731-4ab2-9689-0df4f9bb2ded)
+
+![image](https://github.com/user-attachments/assets/95083f72-8aec-496c-812f-86951dc685c6)
+
+## Considerações Finais
+
+O projeto priorizou o desenvolvimento do back-end, com comentários que explicam o funcionamento dos métodos e atributos em áreas mais complexas do código. 
+
+## Contato
+
+Para mais informações, entre em contato:
+
+- GitHub: [Pedro Lauton](https://github.com/PedroLauton)
+- Email: [lautonpedro@gmail.com](mailto:lautonpedro@gmail.com)
+- LinkedIn: [Pedro Lauton](https://www.linkedin.com/in/pedrolauton)
