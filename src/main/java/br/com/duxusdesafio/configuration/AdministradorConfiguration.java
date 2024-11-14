@@ -16,6 +16,12 @@ import br.com.duxusdesafio.repositories.ComposicaoTimeRepository;
 import br.com.duxusdesafio.repositories.IntegranteRepository;
 import br.com.duxusdesafio.repositories.TimeRepository;
 
+/*
+ * Classe resposável por configurar o perfil de administrador do banco de dados em memória.
+ * Essa classe tem o método 'run' para iniciar o banco de dados com times e integrantes já cadastrados.
+ * Assim, já pode-se testar os endpoints sem cadastrar times ou integrantes.  
+ */
+
 @Configuration
 @Profile("Administrator")
 public class AdministradorConfiguration implements CommandLineRunner{

@@ -3,6 +3,10 @@ package br.com.duxusdesafio.resource.exception;
 import java.io.Serializable;
 import java.time.Instant;
 
+/*
+ * Classe responsável por personalizar o erro que é retornado das requisições.
+ */
+
 public class ErroPadrao implements Serializable{
 
 	private static final long serialVersionUID = 1L;

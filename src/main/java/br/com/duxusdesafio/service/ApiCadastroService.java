@@ -12,6 +12,11 @@ import br.com.duxusdesafio.repositories.ComposicaoTimeRepository;
 import br.com.duxusdesafio.repositories.IntegranteRepository;
 import br.com.duxusdesafio.repositories.TimeRepository;
 
+/*
+ * Serviço de cadastro responsável pela comunicação com os repositórios
+ * e pela realização das operações de inserção de dados no banco de dados.
+ */
+
 @Service
 public class ApiCadastroService {
 	
@@ -33,11 +38,15 @@ public class ApiCadastroService {
 		return integranteRepository.findAll();
 	}
 	
+	public List<Integrante> listarIntegrantesPorId(List<Long> ids) {
+		return integranteRepository.findAllById(ids);
+	}
+	
 	public Time inserirTime(Time time) {
 		return timeRepository.save(time);
 	}
 	
-	public ComposicaoTime inserirComposicaoTime(ComposicaoTime composicaoTime) {
-		return composicaoTimeRepository.save(composicaoTime);
+	public List<ComposicaoTime> inserirComposicaoTime(List<ComposicaoTime> composicaoTime) {
+		return composicaoTimeRepository.saveAll(composicaoTime);
 	}
 }
