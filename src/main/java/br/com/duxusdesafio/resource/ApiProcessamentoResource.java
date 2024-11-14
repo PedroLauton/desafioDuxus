@@ -11,7 +11,6 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -23,7 +22,7 @@ import br.com.duxusdesafio.service.ApiService;
 
 @RestController
 @RequestMapping(value = "/processamento")
-public class ApiResource {
+public class ApiProcessamentoResource {
 
 	@Autowired
 	private TimeRepository timeRepository; 
@@ -31,11 +30,13 @@ public class ApiResource {
 	@Autowired
 	private ApiService apiService; 
 	
-	@GetMapping("/TimeDaData/{data}")
-	public ResponseEntity<TimeResponse> timeDaData(@PathVariable String data) {
-	    
+	@GetMapping("/TimeDaData")
+	public ResponseEntity<TimeResponse> timeDaData(@RequestParam(required = false) String data) {
+		
 		List<Time> todosOsTimes = timeRepository.findAll();
 	    LocalDate dataConvertida = converterData(data);
+	    verificacaoData(dataConvertida);
+	    
 	    Time timeEncontrado = apiService.timeDaData(dataConvertida, todosOsTimes);
 	    
 	    List<String> nomesIntegrantes = timeEncontrado.getComposicaoTime().stream()
@@ -131,12 +132,19 @@ public class ApiResource {
 	}
 	
 	private void verificacaoData(LocalDate dataInicial, LocalDate dataFinal) {
-		if(dataInicial == null || dataFinal == null) {
-			throw new IllegalArgumentException("Deve ser fornecido a Data Inicial e a Data Final");
-		}
-		if(dataInicial.isAfter(dataFinal)) {
-			throw new IllegalArgumentException("A data Inicial deve ser anterior a data Final.");
-		}
+	    if (dataInicial == null ^ dataFinal == null) {
+	        throw new IllegalArgumentException("Ambas as datas (Data Inicial e Data Final) devem ser fornecidas ou ambas devem ser nulas.");
+	    }
+
+	    if (dataInicial != null && dataFinal != null && dataInicial.isAfter(dataFinal)) {
+			throw new IllegalArgumentException("A Data Inicial deve ser anterior à Data Final.");
+	    }
+	}
+	
+	private void verificacaoData(LocalDate data) {
+	    if (data == null) {
+	        throw new IllegalArgumentException("Uma data deve ser fornecida para buscar um time.");
+	    }
 	}
 	
 	private LocalDate converterData(String data) {

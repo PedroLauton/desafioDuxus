@@ -7,6 +7,10 @@ public class TimeResponse {
     private LocalDate data;
     private List<String> integrantes;
 
+    
+    public TimeResponse() {
+    }
+    
     public TimeResponse(LocalDate data, List<String> integrantes) {
         this.data = data;
         this.integrantes = integrantes;

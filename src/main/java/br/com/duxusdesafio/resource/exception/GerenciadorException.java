@@ -10,25 +10,25 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-import br.com.duxusdesafio.service.exceptions.ResourceNotFoundException;
+import br.com.duxusdesafio.service.exceptions.RecursoNaoEncontradoException;
 
 @ComponentScan
 @ControllerAdvice
-public class ResourceExceptionHandler {
+public class GerenciadorException {
 
-	@ExceptionHandler(ResourceNotFoundException.class)
-	public ResponseEntity<StandardError> resourceNotFound(ResourceNotFoundException e, HttpServletRequest request){
+	@ExceptionHandler(RecursoNaoEncontradoException.class)
+	public ResponseEntity<ErroPadrao> resourceNotFound(RecursoNaoEncontradoException e, HttpServletRequest request){
 		String error = "Recurso não encontrado.";
 		HttpStatus status = HttpStatus.NOT_FOUND;
-		StandardError err = new StandardError(Instant.now(), status.value(), error, e.getMessage(), request.getRequestURI());
+		ErroPadrao err = new ErroPadrao(Instant.now(), status.value(), error, e.getMessage(), request.getRequestURI());
 		return ResponseEntity.status(status).body(err);
 	}
 	
 	@ExceptionHandler(IllegalArgumentException.class)
-	public ResponseEntity<StandardError> resourceNotFound(IllegalArgumentException e, HttpServletRequest request){
+	public ResponseEntity<ErroPadrao> resourceNotFound(IllegalArgumentException e, HttpServletRequest request){
 		String error = "Argumento Ilegal.";
 		HttpStatus status = HttpStatus.BAD_REQUEST;
-		StandardError err = new StandardError(Instant.now(), status.value(), error, e.getMessage(), request.getRequestURI());
+		ErroPadrao err = new ErroPadrao(Instant.now(), status.value(), error, e.getMessage(), request.getRequestURI());
 		return ResponseEntity.status(status).body(err);
 	}
 }

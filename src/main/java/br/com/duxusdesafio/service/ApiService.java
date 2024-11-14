@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 import br.com.duxusdesafio.model.ComposicaoTime;
 import br.com.duxusdesafio.model.Integrante;
 import br.com.duxusdesafio.model.Time;
-import br.com.duxusdesafio.service.exceptions.ResourceNotFoundException;
+import br.com.duxusdesafio.service.exceptions.RecursoNaoEncontradoException;
 
 @Service
 public class ApiService {
@@ -25,7 +25,7 @@ public class ApiService {
 				return time; 
 			}
 		}
-       throw new ResourceNotFoundException("Time não encontrado na data", data);
+       throw new RecursoNaoEncontradoException("Time não encontrado na data fornecida.");
     }
 
     //Vai retornar o integrante que estiver presente na maior quantidade de times dentro do período
@@ -43,7 +43,7 @@ public class ApiService {
         return integrantesMap.entrySet().stream()
             .max(Map.Entry.comparingByValue())
             .map(Map.Entry::getKey)
-            .orElseThrow(() -> new ResourceNotFoundException("Integrante mais usado não encontrado. Verifique as datas de pesquisa."));
+            .orElseThrow(() -> new RecursoNaoEncontradoException("Integrante mais usado não encontrado. Verifique as datas de pesquisa."));
     }
 
     //Vai retornar uma lista com os nomes dos integrantes do time mais comum dentro do período
@@ -57,7 +57,7 @@ public class ApiService {
         Time timeMaisComum = timeMap.entrySet().stream()
             .max(Map.Entry.comparingByValue()) 
             .map(Map.Entry::getKey)
-            .orElseThrow(() -> new ResourceNotFoundException("Nenhum time encontrado no intervalo de datas fornecido."));
+            .orElseThrow(() -> new RecursoNaoEncontradoException("Nenhum time encontrado no intervalo de datas fornecido."));
 
         List<ComposicaoTime> listComposicaoTimeMaisComum = timeMaisComum.getComposicaoTime();
 
@@ -83,7 +83,7 @@ public class ApiService {
         return funcaoMap.entrySet().stream()
             .max(Map.Entry.comparingByValue())
             .map(Map.Entry::getKey)
-            .orElseThrow(() -> new ResourceNotFoundException("Nenhuma função encontrada no intervalo de datas fornecido."));
+            .orElseThrow(() -> new RecursoNaoEncontradoException("Nenhuma função encontrada no intervalo de datas fornecido."));
     }
 
     //Vai retornar o nome da Franquia mais comum nos times dentro do período
@@ -103,7 +103,7 @@ public class ApiService {
         return franquiaMap.entrySet().stream()
             .max(Map.Entry.comparingByValue())
             .map(Map.Entry::getKey)
-            .orElseThrow(() -> new ResourceNotFoundException("Nenhuma franquia mais famosa encontrada no intervalo de datas fornecido."));
+            .orElseThrow(() -> new RecursoNaoEncontradoException("Nenhuma franquia mais famosa encontrada no intervalo de datas fornecido."));
     }
 
 
@@ -122,7 +122,7 @@ public class ApiService {
             			quantidadeFranquiaMap.getOrDefault(integranteTime.getFranquia(), 0L) + 1L));
 
         if (quantidadeFranquiaMap.isEmpty()) {
-            throw new ResourceNotFoundException("Nenhuma franquia encontrada no período fornecido.");
+            throw new RecursoNaoEncontradoException("Nenhuma franquia encontrada no período fornecido.");
         }
         
         return quantidadeFranquiaMap;
@@ -143,7 +143,7 @@ public class ApiService {
         			quantidadeFuncaoMap.getOrDefault(integrante.getFuncao(), 0L) + 1L));
         	
         if (quantidadeFuncaoMap.isEmpty()) {
-            throw new ResourceNotFoundException("Nenhuma função encontrada no período fornecido.");
+            throw new RecursoNaoEncontradoException("Nenhuma função encontrada no período fornecido.");
         }
         
         return quantidadeFuncaoMap;
