@@ -37,6 +37,22 @@ Assim, os endpoints estão definidos no pacote `resource`, as regras de negócio
 
 Abaixo seguem as instruções de como testar o projeto.
 
+### Acesso ao banco de dados
+
+Os dados de configuração do banco de dados encontram-se no pacote `src/main/resource`, nos arquivos **application.properties** e **application-Administrator.properties**. 
+Para acessar o banco basta digitar na URL: 
+
+```
+https://localhost:8080/db-console
+```
+
+Para realizar o login basta colocar os seguintes dados:
+- JDBC URL: jdbc:h2:mem:TeamManager
+- User Name: Administrator
+- Password: adm123
+
+Dessa forma, você terá acesso ao banco de dados do projeto. 
+
 ### API de Processamento de Dados
 
 Para executar a API, inicie a aplicação Spring Boot e utilize um navegador ou uma ferramenta como o Postman para acessar os endpoints descritos abaixo. Os endpoints podem ser acessados através do endereço `localhost` seguido dos parâmetros.
