@@ -51,7 +51,7 @@ Para realizar o login basta colocar os seguintes dados:
 - User Name: Administrator
 - Password: adm123
 
-Dessa forma, você terá acesso ao banco de dados do projeto. 
+O projeto já conta com times e integrantes pré-cadastrados. Dessa forma, você terá acesso ao banco de dados do projeto. 
 
 ### API de Processamento de Dados
 
