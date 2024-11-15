@@ -106,7 +106,7 @@ FuncaoMaisComum
 Para realizar o cadastro de integrantes ou times, deve-se digitar a seguinte URL no navegador: 
 
 ```bash
-    http://localhost:8080
+http://localhost:8080
 ```
 Na página inicial será exibido dois links para realizar os cadastros.
 
