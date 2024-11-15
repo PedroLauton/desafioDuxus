@@ -39,8 +39,8 @@ Abaixo seguem as instruções de como testar o projeto.
 
 ### Acesso ao banco de dados
 
-Os dados de configuração do banco de dados encontram-se no pacote `src/main/resource`, nos arquivos **application.properties** e **application-Administrator.properties**. 
-Para acessar o banco basta digitar na URL: 
+O projeto utilizou o banco de dados em memória H2. Os dados de configuração do banco de dados encontram-se no pacote `src/main/resource`, nos arquivos **application.properties** e **application-Administrator.properties**. 
+Para acessar o banco basta digitar a URL: 
 
 ```
 https://localhost:8080/db-console
@@ -51,7 +51,7 @@ Para realizar o login basta colocar os seguintes dados:
 - User Name: Administrator
 - Password: adm123
 
-O projeto já conta com times e integrantes pré-cadastrados. Dessa forma, você terá acesso ao banco de dados do projeto. 
+O projeto já conta com times e integrantes pré-cadastrados. Seguindo esses passos, você terá acesso ao banco de dados do sistema. 
 
 ### API de Processamento de Dados
 
