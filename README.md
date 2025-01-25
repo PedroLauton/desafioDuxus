@@ -1,6 +1,6 @@
-# Duxus Estágio
+# Duxus 
 
-Este repositório contém a solução para o desafio de estágio proposto pela Élin Duxus Consultoria.
+Este repositório contém a solução para o desafio proposto pela Élin Duxus Consultoria.
 
 ## Pré-requisitos
 
